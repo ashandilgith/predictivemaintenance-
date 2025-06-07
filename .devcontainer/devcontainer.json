@@ -1,0 +1,13 @@
+{
+  "name": "Predictive Maintenance Environment",
+  "image": "mcr.microsoft.com/devcontainers/python:3.9",
+  "postCreateCommand": "pip install pandas scikit-learn huggingface_hub datasets",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-toolsai.jupyter"
+      ]
+    }
+  }
+}
