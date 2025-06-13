@@ -3,10 +3,20 @@ import numpy as np
 
 
 def prepare_data():
+#def prepare_data():
 
     #load the data as a pandas dataset 
 
-    train_df = pd.read_csv('dir/filename.txt', sep = ' ', header=None)
+    train_df = pd.read_csv('data/train_FD001.txt', sep = ' ', header=None)
+    #train_df = pd.read_csv('data/train_csv.txt', sep = ' ', header = None)
+    #train_df = pd.read_csv)'data/train_FD001.txt', sep = ' ', header = None) 
+    
+
+
+    # --- This is the crucial fix! ---
+    # The original file has trailing spaces, which pandas reads as empty columns.
+    # We drop these empty columns (usually numbered 26 and 27) before doing anything else.
+    train_df.drop(columns=[26, 27], inplace=True, errors='ignore')
 
     #name the columns 
     columns = ['unit_number', 'time_in_cycles', 'setting_1', 'setting_2', 'setting'] + [f's_{i}' for i in range (1,22)]
@@ -38,7 +48,7 @@ def prepare_data():
     train_df.drop(columns=['max_cycle'], inplace=True)
 
     #save the processed data 
-    train_ds.to_csv('dir/filename.csv', index=False)
+    train_df.to_csv('data/processed_data.csv', index=False)
 
 
 if __name__ == "__main__": 
