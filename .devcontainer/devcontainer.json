@@ -1,7 +1,7 @@
 {
   "name": "Predictive Maintenance Environment",
   "image": "mcr.microsoft.com/devcontainers/python:3.9",
-  "postCreateCommand": "pip install pandas scikit-learn huggingface_hub datasets",
+  "postCreateCommand": "pip install pandas scikit-learn gradio huggingface_hub datasets",
   "customizations": {
     "vscode": {
       "extensions": [

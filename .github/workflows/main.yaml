@@ -1,0 +1,43 @@
+name: Predictive Maintenance CI/CD 
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Python 
+        uses: actions/setup_python@v4
+        with:
+          python-version: '3.9'
+
+      - name: install dependencies
+        run: 
+          pip install pandas scikit-learn huggingface_hub datasets
+
+      
+      - name: prepare data
+        run: python prepare_data.py 
+
+
+      - name: train model
+        run: python train.py 
+
+      - name: Push to Hugging Face Hub 
+        env:
+          HUGGING_FACE_TOKEN: ${{ secrets.HUGGING_FACE_TOKEN }}
+        run:
+          huggingface-cli login --token $
+          huggingface-cli login --token $HUGGING_FACE_TOKEN
+          huggingface-cli repo create ashandilgith/predictive-maintenance-model --type model -y
+          huggingface-cli upload ashandilgith/predictive-maintenance-model model.joblib model.joblib
+
+
+
+
