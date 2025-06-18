@@ -1,4 +1,5 @@
-name: Train and Push Model to Hub
+# This workflow trains a model AND deploys the full Gradio app with that model.
+name: Train and Deploy Gradio App to Spaces
 
 on:
   push:
@@ -7,30 +8,53 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-train-and-push:
+  train-and-deploy:
     runs-on: ubuntu-latest
     
     steps:
+      # Step 1: Checks out your repository code
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          # Fetch all history for all branches and tags
+          fetch-depth: 0
 
+      # Step 2: Set up Python environment
       - name: Set up Python 3.9
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
 
+      # Step 3: Install all dependencies from your requirements.txt file
       - name: Install Dependencies
-        run: pip install pandas scikit-learn huggingface_hub
+        run: pip install -r requirements.txt
 
+      # Step 4: Prepare the data
       - name: Prepare Data
         run: python prepare_data.py
 
-      - name: Train Baseline Model
-        run: python train.py # This creates model.joblib
+      # Step 5: Train the model to create the model.joblib artifact
+      - name: Train Baseline Linear Model
+        run: python train.py
 
-      - name: Push Model to Hub via Python Script
+      # Step 6: Push the entire project folder to your Hugging Face Space
+      - name: Push to HF Space
         env:
+          # Your HF token, stored as a GitHub secret
           HF_TOKEN: ${{ secrets.HUGGING_FACE_TOKEN }}
-          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
-          GITHUB_REPOSITORY_NAME: ${{ github.event.repository.name }}
-        run: python push_to_hub.py
+        run: |
+          # Clones the Hugging Face Space repository into a new folder
+          # The placeholder has been replaced with your actual Space name.
+          git clone https://ashandilgith:$HF_TOKEN@huggingface.co/spaces/ashandilgith/predictivemaintenance-model space
+          
+          # Copy all your project files (including the new model.joblib) into the Space folder
+          # The dot at the end of 'cp -r ./* ./space' is important.
+          cp -r ./* ./space
+          
+          # Go into the Space folder and push the changes
+          cd ./space
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions Bot"
+          git add .
+          git commit -m "feat: Deploy latest version of Gradio app"
+          git push
