@@ -1,4 +1,4 @@
-ame: Train and Push Model to Hub
+name: Train and Push Model to Hub
 
 on:
   push:
