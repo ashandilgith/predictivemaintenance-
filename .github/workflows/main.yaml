@@ -12,14 +12,14 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      # Step 1: Checks out your repository code
+      # Step 1: Checks out your GitHub repository code
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           # Fetch all history for all branches and tags
           fetch-depth: 0
 
-      # Step 2: Set up Python environment
+      # Step 2: Set up the Python environment
       - name: Set up Python 3.9
         uses: actions/setup-python@v4
         with:
@@ -29,32 +29,39 @@ jobs:
       - name: Install Dependencies
         run: pip install -r requirements.txt
 
-      # Step 4: Prepare the data
+      # Step 4: Prepare the data for training
       - name: Prepare Data
         run: python prepare_data.py
 
-      # Step 5: Train the model to create the model.joblib artifact
+      # Step 5: Train the model to create the model.joblib file
       - name: Train Baseline Linear Model
         run: python train.py
 
-      # Step 6: Push the entire project folder to your Hugging Face Space
+      # Step 6: Push the entire project to your Hugging Face Space
       - name: Push to HF Space
         env:
           # Your HF token, stored as a GitHub secret
           HF_TOKEN: ${{ secrets.HUGGING_FACE_TOKEN }}
         run: |
-          # Clones the Hugging Face Space repository into a new folder
-          # The placeholder has been replaced with your actual Space name.
-          git clone https://ashandilgith:$HF_TOKEN@huggingface.co/spaces/ashandilgith/predictivemaintenance-model space
+          # Clones your Hugging Face Space repository into a new folder named 'space'
+          git clone https://ashandilgith:$HF_TOKEN@huggingface.co/spaces/ashandilgith/predictive_maintenance space
           
-          # Copy all your project files (including the new model.joblib) into the Space folder
+          # Copy all your project files (including the new model.joblib) into the 'space' folder
           # The dot at the end of 'cp -r ./* ./space' is important.
           cp -r ./* ./space
           
-          # Go into the Space folder and push the changes
+          # Go into the 'space' folder to perform git operations
           cd ./space
+          
+          # Configure git user for the commit
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions Bot"
+          
+          # Add all the new and updated files to be committed
           git add .
+          
+          # Commit the changes with a descriptive message
           git commit -m "feat: Deploy latest version of Gradio app"
+          
+          # Push the changes to the Hugging Face Space repository
           git push
