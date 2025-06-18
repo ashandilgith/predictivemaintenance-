@@ -46,9 +46,9 @@ jobs:
           # Clones your Hugging Face Space repository into a new folder named 'space'
           git clone https://ashandilgith:$HF_TOKEN@huggingface.co/spaces/ashandilgith/predictive_maintenance space
           
-          # Copy all your project files (including the new model.joblib) into the 'space' folder
-          # The dot at the end of 'cp -r ./* ./space' is important.
-          cp -r ./* ./space
+          # Use rsync to copy all files from the current directory to the 'space' directory,
+          # excluding the 'space' directory itself to prevent the error.
+          rsync -av --delete --exclude='/space' --exclude='.git' ./ ./space/
           
           # Go into the 'space' folder to perform git operations
           cd ./space
@@ -61,7 +61,8 @@ jobs:
           git add .
           
           # Commit the changes with a descriptive message
-          git commit -m "feat: Deploy latest version of Gradio app"
+          # The '--allow-empty' flag prevents errors if there are no changes to commit.
+          git commit -m "feat: Deploy latest version of Gradio app" --allow-empty
           
           # Push the changes to the Hugging Face Space repository
           git push
