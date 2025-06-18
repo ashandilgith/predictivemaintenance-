@@ -1,4 +1,4 @@
-name: Predictive Maintenance CI/CD
+ame: Train and Push Model to Hub
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-train-and-deploy:
+  build-train-and-push:
     runs-on: ubuntu-latest
     
     steps:
@@ -26,18 +26,11 @@ jobs:
         run: python prepare_data.py
 
       - name: Train Baseline Model
-        run: python train.py 
+        run: python train.py # This creates model.joblib
 
-      - name: Log in to Hugging Face Hub
-        uses: huggingface/login@v1
-        with:
-          token: ${{ secrets.HUGGING_FACE_TOKEN }}
-
-      - name: Push Model to Hub
+      - name: Push Model to Hub via Python Script
         env:
-          HF_HUB_REPO: ${{ github.repository_owner }}/${{ github.event.repository.name }}-model
-        run: |
-          huggingface-cli upload $HF_HUB_REPO model.joblib \
-            --path_in_repo model.joblib \
-            --commit-message "Push baseline model from GitHub Actions"
-          echo "Model pushed to https://huggingface.co/$HF_HUB_REPO"
+          HF_TOKEN: ${{ secrets.HUGGING_FACE_TOKEN }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+          GITHUB_REPOSITORY_NAME: ${{ github.event.repository.name }}
+        run: python push_to_hub.py
