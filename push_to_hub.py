@@ -12,7 +12,7 @@ def push_model_to_hub():
     # This gets the secret token passed in from the YAML file
     hf_token = os.environ.get("HF_TOKEN")
     if not hf_token:
-        print("Fatal: HF_TOKEN secret not found.")
+        print("Fatal: HF_TOKEN secret not found. Make sure HF_TOKEN secret is set.")
         sys.exit(1) # Exit with an error code
 
     # These are standard variables provided by GitHub Actions
@@ -23,6 +23,10 @@ def push_model_to_hub():
         print("Fatal: Could not determine repository owner or name from GitHub environment variables.")
         sys.exit(1)
         
+    # --- THIS IS THE FIX ---
+    # Clean up the repo name by removing any trailing hyphens before we add our suffix.
+    repo_name_base = repo_name_base.rstrip("-")
+
     # We will create a Hugging Face repo with a name like "your-username/your-repo-name-model"
     repo_id = f"{repo_owner}/{repo_name_base}-model"
     
