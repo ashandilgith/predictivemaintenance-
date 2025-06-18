@@ -1,4 +1,4 @@
-rom huggingface_hub import HfApi
+from huggingface_hub import HfApi
 import os
 import sys
 
