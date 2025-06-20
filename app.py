@@ -2,6 +2,7 @@ import gradio as gr
 import joblib
 import numpy as np
 import os
+import json
 
 # --- 1. Load the Pre-Trained Model ---
 # This script assumes 'model.joblib' exists because you've run train.py
@@ -27,44 +28,59 @@ feature_names = [
 # --- 3. Create the Prediction Function ---
 def predict_rul(*args):
     """
-    Takes all 24 slider/number inputs as arguments, arranges them into the
+    Takes all 24 number inputs as arguments, arranges them into the
     correct format, and returns the model's RUL prediction.
     """
     if model is None:
         return "Model not loaded. Please run 'python train.py' and restart the app."
 
-    input_data = np.array(args).reshape(1, -1)
+    # Ensure all inputs are converted to float, handling None or empty strings
+    processed_args = [float(arg) if arg is not None and arg != '' else 0.0 for arg in args]
+    
+    input_data = np.array(processed_args).reshape(1, -1)
     prediction = model.predict(input_data)
     final_prediction = prediction[0]
     
     return f"{round(final_prediction, 2)} cycles remaining"
 
+
 # --- 4. Build the Gradio Interface ---
 with gr.Blocks(theme=gr.themes.Soft()) as demo:
-    gr.Markdown("# Turbofan Engine Predictive Maintenance")
+    gr.Markdown("# North Star 1.0")
     gr.Markdown(
         """
-        This is a demo of a predictive maintenance model for a turbofan engine. 
-        However, the underlying principles can be customized for any form of machinery that uses sensor data 
-        to predict its Remaining Useful Life (RUL), performance, or time before a potential fault.
+        Predictive maintenance machine learning system, forecasting faults and remaining useful life (RUL).
+
+        Demo parameters trained on aircraft turbo fan engine dataset (NASA FD001 file). 
+
+        Model automatically trains on dataset upon launch.
+
         """
     )
+
     
-    gr.Markdown("### Engine Parameters & Sensor Readings")
+   # --- NEW: Video Display ---
+# This component will display your video.
+    gr.Video(
+        value="intro.mp4", #  
+        label="Customizable for multiple machines",
+        autoplay=True, # Optional: makes the video play automatically
+        interactive=False # Optional: prevents users from uploading their own video
+        )
     
-    # Create a list to hold all our input components in a single column
+    gr.Markdown("### Enter Machine Parameters & Sensor Readings")
+    
+    # Create the user inputs in a grid
     inputs = []
-    # Arrange the number inputs into a 3-column grid for a more compact layout
     num_columns = 3
     for i in range(0, len(feature_names), num_columns):
         with gr.Row():
             for j in range(num_columns):
                 if i + j < len(feature_names):
                     name = feature_names[i + j]
-                    # Create the component and add it to our list of inputs
-                    component = gr.Number(label=name, value=0.0)
+                    component = gr.Number(label=name, value=50.0)
                     inputs.append(component)
-
+    
     # Place the prediction button below the inputs
     predict_btn = gr.Button("Predict RUL", variant="primary")
 
