@@ -53,13 +53,14 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
         """
     )
     # This component will display your four images in a neat grid.
-    gr.Gallery(
-        value=["https://images.pexels.com/photos/28084075/pexels-photo-28084075.jpeg"],
-        label="Customize easily for almost any machinery",
-        columns=1, # Arrange images in 4 columns
-        object_fit="cover", 
-        height="10"
-    )
+    
+
+    gr.Video(
+        value="intro.mp4", #  
+        label="Customizable for multiple machines",
+        autoplay=True, # Optional: makes the video play automatically
+        interactive=False # Optional: prevents users from uploading their own video
+        )
 
 
 

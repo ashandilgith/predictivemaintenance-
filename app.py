@@ -61,12 +61,13 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
     
    # --- NEW: Video Display ---
 # This component will display your video.
-    gr.Video(
-        value="intro.mp4", #  
-        label="Customizable for multiple machines",
-        autoplay=True, # Optional: makes the video play automatically
-        interactive=False # Optional: prevents users from uploading their own video
-        )
+    gr.Gallery(
+        value=["plane.jpg"],
+        label="Customize easily for almost any machinery",
+        columns=1, 
+        object_fit="cover", 
+        height="10"
+    )
     
     gr.Markdown("### Enter Machine Parameters & Sensor Readings")
     
