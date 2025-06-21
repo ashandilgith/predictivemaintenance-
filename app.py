@@ -46,7 +46,7 @@ def predict_rul(*args):
 
 # --- 4. Build the Gradio Interface ---
 with gr.Blocks(theme=gr.themes.Soft()) as demo:
-    gr.Markdown("# North Star 1.0")
+    gr.Markdown("# Zodiac 1.0")
     gr.Markdown(
         """
         Predictive maintenance machine learning system, forecasting faults and remaining useful life (RUL).
@@ -62,7 +62,7 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
    # --- NEW: Video Display ---
 # This component will display your video.
     gr.Gallery(
-        value=["plane.jpg"],
+        value=["https://images.pexels.com/photos/16667540/pexels-photo-16667540.jpeg"],
         label="Customize easily for almost any machinery",
         columns=1, 
         object_fit="cover", 
@@ -98,4 +98,4 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
 
 # --- 5. Launch the App ---
 if __name__ == "__main__":
-    demo.launch()
+    demo.launch(share=True)
