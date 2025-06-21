@@ -41,15 +41,29 @@ def predict_rul(*args):
 
 # --- 4. Build the Gradio Interface ---
 with gr.Blocks(theme=gr.themes.Soft()) as demo:
-    gr.Markdown("# Turbofan Engine Predictive Maintenance")
+    gr.Markdown("# North Star 1.0")
     gr.Markdown(
         """
-        This is a demo of a predictive maintenance model for a turbofan engine. 
-        However, the underlying principles can be customized for any form of machinery that uses sensor data 
-        to predict its Remaining Useful Life (RUL), performance, or time before a potential fault.
+        Predictive maintenance machine learning system, forecasting faults and remaining useful life (RUL).
+
+        Demo parameters trained on aircraft turbo fan engine dataset (NASA FD001 file). 
+
+        Model automatically trains on dataset upon launch.
+
         """
     )
-    
+    # This component will display your four images in a neat grid.
+    gr.Gallery(
+        value=["https://images.pexels.com/photos/28084075/pexels-photo-28084075.jpeg"],
+        label="Customize easily for almost any machinery",
+        columns=1, # Arrange images in 4 columns
+        object_fit="cover", 
+        height="10"
+    )
+
+
+
+
     gr.Markdown("### Engine Parameters & Sensor Readings")
     
     # Create a list to hold all our input components in a single column
